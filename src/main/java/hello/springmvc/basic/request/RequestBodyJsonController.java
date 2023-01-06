@@ -3,6 +3,7 @@ package hello.springmvc.basic.request;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hello.springmvc.basic.requestmapping.HelloData;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -72,4 +73,37 @@ public class RequestBodyJsonController {
         log.info("username={}, age={}", data.getUsername(), data.getAge());
         return "ok";
     }
+
+    @ResponseBody
+    @PostMapping("/request-body-json-v4")
+    public String requestBodyJsonV4(HttpEntity<HelloData> httpEntity) {
+        HelloData data = httpEntity.getBody();
+        log.info("username={}, age={}", data.getUsername(), data.getAge());
+        return "ok";
+    }
+
+    /**
+     * @RequestBody 생략 불가능(@ModelAttribute 가 적용되어 버림)
+     * HttpMessageConverter 사용 -> MappingJackson2HttpMessageConverter (contenttype: application/json)
+     *
+     * @ResponseBody 적용
+     * - 메시지 바디 정보 직접 반환(view 조회X)
+     * - HttpMessageConverter 사용 -> MappingJackson2HttpMessageConverter 적용
+    (Accept: application/json)
+     *
+     * @ResponseBody
+     * 응답의 경우에도 @ResponseBody 를 사용하면 해당 객체를 HTTP 메시지 바디에 직접 넣어줄 수 있다.
+     * 물론 이 경우에도 HttpEntity 를 사용해도 된다.
+     * @RequestBody 요청
+     * JSON 요청 HTTP 메시지 컨버터 객체
+     * @ResponseBody 응답
+     * 객체 HTTP 메시지 컨버터 JSON 응답
+     */
+    @ResponseBody
+    @PostMapping("/request-body-json-v5")
+    public HelloData requestBodyJsonV5(@RequestBody HelloData data) {
+        log.info("username={}, age={}", data.getUsername(), data.getAge());
+        return data;
+    }
+
 }
