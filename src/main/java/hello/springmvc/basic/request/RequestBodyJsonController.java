@@ -53,4 +53,23 @@ public class RequestBodyJsonController {
         log.info("username={}, age={}", data.getUsername(), data.getAge());
         return "ok";
     }
+
+    /**
+     * @RequestBody 생략 불가능(@ModelAttribute 가 적용되어 버림)
+     * HttpMessageConverter 사용 -> MappingJackson2HttpMessageConverter (contenttype: application/json)
+     *
+     * @RequestBody 객체 파라미터
+     * @RequestBody HelloData data
+     * @RequestBody 에 직접 만든 객체를 지정할 수 있다.
+     * HttpEntity , @RequestBody 를 사용하면 HTTP 메시지 컨버터가 HTTP 메시지 바디의 내용을 우리가
+     * 원하는 문자나 객체 등으로 변환해준다.
+     * HTTP 메시지 컨버터는 문자 뿐만 아니라 JSON도 객체로 변환해주는데, 우리가 방금 V2에서 했던 작업을
+     * 대신 처리해준다
+     */
+    @ResponseBody
+    @PostMapping("/request-body-json-v3")
+    public String requestBodyJsonV3(@RequestBody HelloData data) {
+        log.info("username={}, age={}", data.getUsername(), data.getAge());
+        return "ok";
+    }
 }
